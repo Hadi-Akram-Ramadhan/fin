@@ -233,8 +233,8 @@ function calculateLateFee($dueDate, $returnDate) {
     
     $diff = $return->diff($due);
     $days = $diff->days;
-
-if ($return > $due) {
+    
+    if ($return > $due) {
         $fee = $days * LATE_FEE_PER_DAY;
         return ['days' => $days, 'fee' => $fee];
     }
@@ -277,7 +277,7 @@ function formatDate($date) {
 }
 
 function debug($var, $label = '') {
-    echo '<pre style="background: 
+    echo '<pre style="background: #f4f4f4; padding: 10px; border: 1px solid #ddd;">';
     if ($label) {
         echo "<strong>$label:</strong>\n";
     }
@@ -286,7 +286,7 @@ function debug($var, $label = '') {
 }
 
 function debugPrint($var, $label = '') {
-    echo '<pre style="background: 
+    echo '<pre style="background: #f4f4f4; padding: 10px; border: 1px solid #ddd;">';
     if ($label) {
         echo "<strong>$label:</strong>\n";
     }
