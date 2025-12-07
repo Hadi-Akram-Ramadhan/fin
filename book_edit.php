@@ -10,7 +10,6 @@ if (empty($bookID)) {
     exit;
 }
 
-// Get book data
 $bookLine = findByID(BOOKS_FILE, $bookID);
 if (!$bookLine) {
     header('Location: books.php?success=' . urlencode('Buku tidak ditemukan'));
@@ -19,7 +18,6 @@ if (!$bookLine) {
 
 $book = parseBook($bookLine);
 
-// Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $judul = sanitizeInput($_POST['judul'] ?? '');
     $pengarang = sanitizeInput($_POST['pengarang'] ?? '');
@@ -27,9 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $isbn = sanitizeInput($_POST['isbn'] ?? '');
     $tahun = sanitizeInput($_POST['tahun'] ?? '');
     $status = sanitizeInput($_POST['status'] ?? STATUS_AVAILABLE);
-    
-    // Validations
-    if (!validateRequired($judul, 3)) {
+
+if (!validateRequired($judul, 3)) {
         $errors[] = "Judul buku minimal 3 karakter";
     }
     
@@ -48,9 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($tahun) || !is_numeric($tahun) || $tahun < 1000 || $tahun > date('Y')) {
         $errors[] = "Tahun terbit tidak valid";
     }
-    
-    // If no errors, update data
-    if (empty($errors)) {
+
+if (empty($errors)) {
         $pengarang = capitalizeName($pengarang);
         
         $data = implode('|', [

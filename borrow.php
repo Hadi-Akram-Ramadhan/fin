@@ -2,23 +2,20 @@
 require_once 'config.php';
 require_once 'functions.php';
 
-// Get all active borrowings
 $borrowings = readData(BORROWINGS_FILE);
 $activeBorrowings = [];
 
 foreach ($borrowings as $line) {
     $borrow = parseBorrowing($line);
     if (!$borrow || $borrow['status'] !== BORROW_STATUS_ONGOING) continue;
-    
-    // Get member and book info
-    $memberLine = findByID(MEMBERS_FILE, $borrow['member_id']);
+
+$memberLine = findByID(MEMBERS_FILE, $borrow['member_id']);
     $member = $memberLine ? parseMember($memberLine) : null;
     
     $bookLine = findByID(BOOKS_FILE, $borrow['book_id']);
     $book = $bookLine ? parseBook($bookLine) : null;
-    
-    // Check if overdue
-    $today = new DateTime();
+
+$today = new DateTime();
     $dueDate = new DateTime($borrow['tanggal_jatuh_tempo']);
     $isOverdue = $today > $dueDate;
     $daysOverdue = $isOverdue ? $today->diff($dueDate)->days : 0;

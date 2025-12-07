@@ -2,13 +2,10 @@
 require_once 'config.php';
 require_once 'functions.php';
 
-// Get all members
 $members = readData(MEMBERS_FILE);
 
-// Search
 $search = isset($_GET['search']) ? sanitizeInput($_GET['search']) : '';
 
-// Filter members
 $filteredMembers = [];
 foreach ($members as $line) {
     $member = parseMember($line);

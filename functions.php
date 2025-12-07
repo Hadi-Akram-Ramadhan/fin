@@ -1,18 +1,7 @@
 <?php
-/**
- * Helper Functions - Sistem Manajemen Perpustakaan
- * Berisi fungsi-fungsi untuk file operations, validasi, dan manipulasi string
- */
 
 require_once 'config.php';
 
-// ==================== FILE OPERATIONS (Komponen Wajib #4) ====================
-
-/**
- * Read all data from file
- * @param string $filepath Path to file
- * @return array Array of data lines
- */
 function readData($filepath) {
     if (!file_exists($filepath)) {
         return [];
@@ -35,12 +24,6 @@ function readData($filepath) {
     return $data;
 }
 
-/**
- * Write data to file
- * @param string $filepath Path to file
- * @param array $data Array of data to write
- * @return bool Success status
- */
 function writeData($filepath, $data) {
     $file = fopen($filepath, 'w');
     if (!$file) {
@@ -55,12 +38,6 @@ function writeData($filepath, $data) {
     return true;
 }
 
-/**
- * Append data to file
- * @param string $filepath Path to file
- * @param string $data Data to append
- * @return bool Success status
- */
 function appendData($filepath, $data) {
     $file = fopen($filepath, 'a');
     if (!$file) {
@@ -72,13 +49,6 @@ function appendData($filepath, $data) {
     return true;
 }
 
-// ==================== STRING MANIPULATION (Komponen Wajib #3) ====================
-
-/**
- * Sanitize input string
- * @param string $input Input string
- * @return string Sanitized string
- */
 function sanitizeInput($input) {
     $input = trim($input);
     $input = stripslashes($input);
@@ -86,93 +56,45 @@ function sanitizeInput($input) {
     return $input;
 }
 
-/**
- * Capitalize name properly
- * @param string $name Name to capitalize
- * @return string Capitalized name
- */
 function capitalizeName($name) {
-    // Menggunakan strtolower() dan kemudian ucwords()
+    
     return ucwords(strtolower($name));
 }
 
-/**
- * Generate ID with prefix
- * @param string $prefix ID prefix
- * @param int $number Number part
- * @param int $length Total length of number part
- * @return string Generated ID
- */
 function generateID($prefix, $number, $length = 4) {
-    // Menggunakan strlen() untuk validasi panjang
+    
     $numberStr = str_pad($number, $length, '0', STR_PAD_LEFT);
     return strtoupper($prefix) . $numberStr;
 }
 
-/**
- * Extract ID number from full ID
- * @param string $id Full ID
- * @param int $prefixLength Length of prefix
- * @return int Number part
- */
 function extractIDNumber($id, $prefixLength) {
-    // Menggunakan substr() untuk extract number
+    
     return (int)substr($id, $prefixLength);
 }
 
-// ==================== VALIDATION (Komponen Wajib #2) ====================
-
-/**
- * Validate email address
- * @param string $email Email to validate
- * @return bool Valid status
- */
 function validateEmail($email) {
-    // Menggunakan filter_var() dengan FILTER_VALIDATE_EMAIL
+    
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
-/**
- * Validate phone number (Indonesian format)
- * @param string $phone Phone number
- * @return bool Valid status
- */
 function validatePhone($phone) {
-    // Harus dimulai dengan 08 atau +62, panjang 10-13 digit
+    
     $pattern = '/^(\+62|62|08)[0-9]{8,11}$/';
     return preg_match($pattern, $phone) === 1;
 }
 
-/**
- * Validate required field
- * @param string $value Value to validate
- * @param int $minLength Minimum length
- * @return bool Valid status
- */
 function validateRequired($value, $minLength = 1) {
-    // Menggunakan strlen() untuk check panjang string
+    
     return strlen(trim($value)) >= $minLength;
 }
 
-/**
- * Validate ISBN format
- * @param string $isbn ISBN to validate
- * @return bool Valid status
- */
 function validateISBN($isbn) {
-    // Format: 978-XXXXXX atau 13 digit
+    
     $pattern = '/^(978|979)?[0-9]{9,10}$/';
     $isbn = str_replace('-', '', $isbn);
     return preg_match($pattern, $isbn) === 1;
 }
 
-// ==================== DATA PARSING ====================
-
-/**
- * Parse book data line
- * @param string $line Data line
- * @return array|null Parsed data array
- */
 function parseBook($line) {
     $parts = explode('|', $line);
     if (count($parts) < 7) return null;
@@ -188,11 +110,6 @@ function parseBook($line) {
     ];
 }
 
-/**
- * Parse member data line
- * @param string $line Data line
- * @return array|null Parsed data array
- */
 function parseMember($line) {
     $parts = explode('|', $line);
     if (count($parts) < 8) return null;
@@ -209,11 +126,6 @@ function parseMember($line) {
     ];
 }
 
-/**
- * Parse borrowing data line
- * @param string $line Data line
- * @return array|null Parsed data array
- */
 function parseBorrowing($line) {
     $parts = explode('|', $line);
     if (count($parts) < 6) return null;
@@ -228,11 +140,6 @@ function parseBorrowing($line) {
     ];
 }
 
-/**
- * Parse return data line
- * @param string $line Data line
- * @return array|null Parsed data array
- */
 function parseReturn($line) {
     $parts = explode('|', $line);
     if (count($parts) < 5) return null;
@@ -246,15 +153,6 @@ function parseReturn($line) {
     ];
 }
 
-// ==================== UTILITY FUNCTIONS ====================
-
-/**
- * Get next available ID
- * @param string $filepath File path
- * @param string $prefix ID prefix
- * @param int $prefixLength Length of prefix
- * @return string Next ID
- */
 function getNextID($filepath, $prefix, $prefixLength) {
     $data = readData($filepath);
     
@@ -275,12 +173,6 @@ function getNextID($filepath, $prefix, $prefixLength) {
     return generateID($prefix, $maxNumber + 1);
 }
 
-/**
- * Find data by ID
- * @param string $filepath File path
- * @param string $id ID to find
- * @return string|null Data line
- */
 function findByID($filepath, $id) {
     $data = readData($filepath);
     
@@ -294,13 +186,6 @@ function findByID($filepath, $id) {
     return null;
 }
 
-/**
- * Update data by ID
- * @param string $filepath File path
- * @param string $id ID to update
- * @param string $newData New data line
- * @return bool Success status
- */
 function updateByID($filepath, $id, $newData) {
     $data = readData($filepath);
     $updated = false;
@@ -321,12 +206,6 @@ function updateByID($filepath, $id, $newData) {
     return false;
 }
 
-/**
- * Delete data by ID
- * @param string $filepath File path
- * @param string $id ID to delete
- * @return bool Success status
- */
 function deleteByID($filepath, $id) {
     $data = readData($filepath);
     $newData = [];
@@ -348,21 +227,14 @@ function deleteByID($filepath, $id) {
     return false;
 }
 
-/**
- * Calculate late fee
- * @param string $dueDate Due date (Y-m-d)
- * @param string $returnDate Return date (Y-m-d)
- * @return array ['days' => int, 'fee' => int]
- */
 function calculateLateFee($dueDate, $returnDate) {
     $due = new DateTime($dueDate);
     $return = new DateTime($returnDate);
     
     $diff = $return->diff($due);
     $days = $diff->days;
-    
-    // If returned late
-    if ($return > $due) {
+
+if ($return > $due) {
         $fee = $days * LATE_FEE_PER_DAY;
         return ['days' => $days, 'fee' => $fee];
     }
@@ -370,11 +242,6 @@ function calculateLateFee($dueDate, $returnDate) {
     return ['days' => 0, 'fee' => 0];
 }
 
-/**
- * Count active borrowings by member
- * @param string $memberID Member ID
- * @return int Count
- */
 function countActiveBorrowings($memberID) {
     $data = readData(BORROWINGS_FILE);
     $count = 0;
@@ -389,20 +256,10 @@ function countActiveBorrowings($memberID) {
     return $count;
 }
 
-/**
- * Format currency (Rupiah)
- * @param int $amount Amount
- * @return string Formatted currency
- */
 function formatRupiah($amount) {
     return 'Rp ' . number_format($amount, 0, ',', '.');
 }
 
-/**
- * Format date to Indonesian format
- * @param string $date Date (Y-m-d)
- * @return string Formatted date
- */
 function formatDate($date) {
     $months = [
         '01' => 'Januari', '02' => 'Februari', '03' => 'Maret',
@@ -419,15 +276,8 @@ function formatDate($date) {
     return $date;
 }
 
-// ==================== DEBUGGING HELPERS (Komponen Wajib #5) ====================
-
-/**
- * Debug print with var_dump
- * @param mixed $var Variable to dump
- * @param string $label Label for the dump
- */
 function debug($var, $label = '') {
-    echo '<pre style="background: #f4f4f4; padding: 10px; border: 1px solid #ddd;">';
+    echo '<pre style="background: 
     if ($label) {
         echo "<strong>$label:</strong>\n";
     }
@@ -435,13 +285,8 @@ function debug($var, $label = '') {
     echo '</pre>';
 }
 
-/**
- * Debug print with print_r
- * @param mixed $var Variable to print
- * @param string $label Label for the print
- */
 function debugPrint($var, $label = '') {
-    echo '<pre style="background: #f4f4f4; padding: 10px; border: 1px solid #ddd;">';
+    echo '<pre style="background: 
     if ($label) {
         echo "<strong>$label:</strong>\n";
     }

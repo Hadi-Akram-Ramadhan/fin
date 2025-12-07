@@ -9,7 +9,6 @@ if (empty($bookID)) {
     exit;
 }
 
-// Get book data
 $bookLine = findByID(BOOKS_FILE, $bookID);
 if (!$bookLine) {
     header('Location: books.php?success=' . urlencode('Buku tidak ditemukan'));
@@ -18,7 +17,6 @@ if (!$bookLine) {
 
 $book = parseBook($bookLine);
 
-// Check if book is currently borrowed
 $canDelete = true;
 $borrowings = readData(BORROWINGS_FILE);
 foreach ($borrowings as $line) {
@@ -29,7 +27,6 @@ foreach ($borrowings as $line) {
     }
 }
 
-// Process deletion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm'])) {
     if (!$canDelete) {
         header('Location: books.php?success=' . urlencode('Tidak dapat menghapus buku yang sedang dipinjam!'));
@@ -70,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm'])) {
     </nav>
 
     <div class="container animate-fade-in">
-        <div class="page-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+        <div class="page-header" style="background: linear-gradient(135deg, 
             <h1>🗑️ Hapus Buku</h1>
             <p>Konfirmasi penghapusan buku</p>
         </div>

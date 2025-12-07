@@ -5,18 +5,16 @@ require_once 'functions.php';
 $errors = [];
 $success = false;
 
-// Process form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get and sanitize inputs (Komponen Wajib #1 - Form Input)
+    
     $judul = sanitizeInput($_POST['judul'] ?? '');
     $pengarang = sanitizeInput($_POST['pengarang'] ?? '');
     $kategori = sanitizeInput($_POST['kategori'] ?? '');
     $isbn = sanitizeInput($_POST['isbn'] ?? '');
     $tahun = sanitizeInput($_POST['tahun'] ?? '');
     $status = sanitizeInput($_POST['status'] ?? STATUS_AVAILABLE);
-    
-    // Validations (Komponen Wajib #2 - Validasi PHP)
-    if (!validateRequired($judul, 3)) {
+
+if (!validateRequired($judul, 3)) {
         $errors[] = "Judul buku minimal 3 karakter";
     }
     
@@ -35,17 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($tahun) || !is_numeric($tahun) || $tahun < 1000 || $tahun > date('Y')) {
         $errors[] = "Tahun terbit tidak valid";
     }
-    
-    // If no errors, save data
-    if (empty($errors)) {
-        // Capitalize pengarang (Komponen Wajib #3 - Manipulasi String)
+
+if (empty($errors)) {
+        
         $pengarang = capitalizeName($pengarang);
-        
-        // Generate new ID
-        $newID = getNextID(BOOKS_FILE, 'B', 1);
-        
-        // Create data line
-        $data = implode('|', [
+
+$newID = getNextID(BOOKS_FILE, 'B', 1);
+
+$data = implode('|', [
             $newID,
             $judul,
             $pengarang,
@@ -54,9 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tahun,
             $status
         ]);
-        
-        // Save to file (Komponen Wajib #4 - File Handling)
-        if (appendData(BOOKS_FILE, $data)) {
+
+if (appendData(BOOKS_FILE, $data)) {
             header('Location: books.php?success=' . urlencode('Buku berhasil ditambahkan!'));
             exit;
         } else {
@@ -114,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h3 class="card-title">Form Data Buku</h3>
             </div>
             <div class="card-body">
-                <!-- Komponen Wajib #1 - Form dan Input Data HTML -->
+                <!-- Komponen Wajib 
                 <form method="POST" action="">
                     <div class="grid grid-2">
                         <!-- Input Text: Judul Buku -->

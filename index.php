@@ -2,7 +2,6 @@
 require_once 'config.php';
 require_once 'functions.php';
 
-// Get statistics
 $books = readData(BOOKS_FILE);
 $members = readData(MEMBERS_FILE);
 $borrowings = readData(BORROWINGS_FILE);
@@ -10,7 +9,6 @@ $borrowings = readData(BORROWINGS_FILE);
 $totalBooks = count($books);
 $totalMembers = count($members);
 
-// Count available and borrowed books
 $availableBooks = 0;
 $borrowedBooks = 0;
 foreach ($books as $line) {
@@ -24,7 +22,6 @@ foreach ($books as $line) {
     }
 }
 
-// Count active borrowings
 $activeBorrowings = 0;
 foreach ($borrowings as $line) {
     $borrow = parseBorrowing($line);

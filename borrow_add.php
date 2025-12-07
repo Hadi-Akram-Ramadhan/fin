@@ -4,7 +4,6 @@ require_once 'functions.php';
 
 $errors = [];
 
-// Get all members for dropdown
 $members = readData(MEMBERS_FILE);
 $activeMembers = [];
 foreach ($members as $line) {
@@ -14,7 +13,6 @@ foreach ($members as $line) {
     }
 }
 
-// Get available books for dropdown
 $books = readData(BOOKS_FILE);
 $availableBooks = [];
 foreach ($books as $line) {
@@ -29,9 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bookID = sanitizeInput($_POST['book_id'] ?? '');
     $tanggalPinjam = sanitizeInput($_POST['tanggal_pinjam'] ?? '');
     $tanggalJatuhTempo = sanitizeInput($_POST['tanggal_jatuh_tempo'] ?? '');
-    
-    // Validations
-    if (empty($memberID)) {
+
+if (empty($memberID)) {
         $errors[] = "Pilih anggota";
     }
     
@@ -46,10 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($tanggalJatuhTempo)) {
         $errors[] = "Tanggal jatuh tempo harus diisi";
     }
-    
-    // Additional validations
-    if (empty($errors)) {
-        // Check if member exists and active
+
+if (empty($errors)) {
+        
         $memberLine = findByID(MEMBERS_FILE, $memberID);
         if (!$memberLine) {
             $errors[] = "Anggota tidak ditemukan";
@@ -59,9 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors[] = "Anggota tidak aktif";
             }
         }
-        
-        // Check if book exists and available
-        $bookLine = findByID(BOOKS_FILE, $bookID);
+
+$bookLine = findByID(BOOKS_FILE, $bookID);
         if (!$bookLine) {
             $errors[] = "Buku tidak ditemukan";
         } else {
@@ -70,28 +65,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors[] = "Buku tidak tersedia (sedang dipinjam)";
             }
         }
-        
-        // Check borrow limit
-        $activeBorrowCount = countActiveBorrowings($memberID);
+
+$activeBorrowCount = countActiveBorrowings($memberID);
         if ($activeBorrowCount >= MAX_BORROW_LIMIT) {
             $errors[] = "Anggota sudah mencapai batas maksimal peminjaman (" . MAX_BORROW_LIMIT . " buku)";
         }
-        
-        // Date validation
-        $pinjam = new DateTime($tanggalPinjam);
+
+$pinjam = new DateTime($tanggalPinjam);
         $jatuhTempo = new DateTime($tanggalJatuhTempo);
         if ($jatuhTempo <= $pinjam) {
             $errors[] = "Tanggal jatuh tempo harus setelah tanggal peminjaman";
         }
     }
-    
-    // If no errors, save borrowing
-    if (empty($errors)) {
-        // Generate borrow ID
-        $borrowID = getNextID(BORROWINGS_FILE, 'BR', 2);
+
+if (empty($errors)) {
         
-        // Create borrowing data
-        $data = implode('|', [
+        $borrowID = getNextID(BORROWINGS_FILE, 'BR', 2);
+
+$data = implode('|', [
             $borrowID,
             $memberID,
             $bookID,
@@ -99,10 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tanggalJatuhTempo,
             BORROW_STATUS_ONGOING
         ]);
-        
-        // Save borrowing
-        if (appendData(BORROWINGS_FILE, $data)) {
-            // Update book status to borrowed
+
+if (appendData(BORROWINGS_FILE, $data)) {
+            
             $bookData = implode('|', [
                 $bookID,
                 $book['judul'],
@@ -123,7 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Default dates
 $defaultPinjam = date('Y-m-d');
 $defaultJatuhTempo = date('Y-m-d', strtotime('+' . DEFAULT_BORROW_DAYS . ' days'));
 ?>

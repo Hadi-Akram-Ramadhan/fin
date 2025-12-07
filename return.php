@@ -9,7 +9,6 @@ $memberData = null;
 $bookData = null;
 $lateFeeInfo = null;
 
-// If borrow_id provided, load data
 if ($borrowID) {
     $borrowLine = findByID(BORROWINGS_FILE, $borrowID);
     if ($borrowLine) {
@@ -18,15 +17,14 @@ if ($borrowID) {
         if ($borrowData['status'] === BORROW_STATUS_RETURNED) {
             $errors[] = "Peminjaman ini sudah dikembalikan";
         } else {
-            // Get member and book info
+            
             $memberLine = findByID(MEMBERS_FILE, $borrowData['member_id']);
             $memberData = $memberLine ? parseMember($memberLine) : null;
             
             $bookLine = findByID(BOOKS_FILE, $borrowData['book_id']);
             $bookData = $bookLine ? parseBook($bookLine) : null;
-            
-            // Calculate late fee
-            $returnDate = date('Y-m-d');
+
+$returnDate = date('Y-m-d');
             $lateFeeInfo = calculateLateFee($borrowData['tanggal_jatuh_tempo'], $returnDate);
         }
     } else {
@@ -34,7 +32,6 @@ if ($borrowID) {
     }
 }
 
-// Process return
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['process_return'])) {
     $returnBorrowID = sanitizeInput($_POST['borrow_id'] ?? '');
     $returnDate = sanitizeInput($_POST['tanggal_kembali'] ?? '');
@@ -47,15 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['process_return'])) {
             $errors[] = "Peminjaman tidak ditemukan";
         } else {
             $borrow = parseBorrowing($borrowLine);
-            
-            // Calculate late fee
-            $feeInfo = calculateLateFee($borrow['tanggal_jatuh_tempo'], $returnDate);
-            
-            // Generate return ID
-            $returnID = getNextID(RETURNS_FILE, 'RT', 2);
-            
-            // Save return record
-            $returnData = implode('|', [
+
+$feeInfo = calculateLateFee($borrow['tanggal_jatuh_tempo'], $returnDate);
+
+$returnID = getNextID(RETURNS_FILE, 'RT', 2);
+
+$returnData = implode('|', [
                 $returnID,
                 $returnBorrowID,
                 $returnDate,
@@ -64,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['process_return'])) {
             ]);
             
             if (appendData(RETURNS_FILE, $returnData)) {
-                // Update borrowing status
+                
                 $borrowingData = implode('|', [
                     $borrow['id'],
                     $borrow['member_id'],
@@ -75,9 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['process_return'])) {
                 ]);
                 
                 updateByID(BORROWINGS_FILE, $returnBorrowID, $borrowingData);
-                
-                // Update book status to available
-                $bookLine = findByID(BOOKS_FILE, $borrow['book_id']);
+
+$bookLine = findByID(BOOKS_FILE, $borrow['book_id']);
                 if ($bookLine) {
                     $book = parseBook($bookLine);
                     $bookData = implode('|', [

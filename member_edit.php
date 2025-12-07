@@ -25,9 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alamat = sanitizeInput($_POST['alamat'] ?? '');
     $jenis = isset($_POST['jenis']) ? $_POST['jenis'] : [];
     $status = sanitizeInput($_POST['status'] ?? STATUS_ACTIVE);
-    
-    // Validations
-    if (!validateRequired($nama, 3)) {
+
+if (!validateRequired($nama, 3)) {
         $errors[] = "Nama lengkap minimal 3 karakter";
     }
     
@@ -71,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Parse existing jenis for checkbox
 $existingJenis = explode(',', $member['jenis']);
 ?>
 <!DOCTYPE html>

@@ -17,19 +17,17 @@ if (!$memberLine) {
 
 $member = parseMember($memberLine);
 
-// Get borrowing history
 $allBorrowings = readData(BORROWINGS_FILE);
 $memberBorrowings = [];
 
 foreach ($allBorrowings as $line) {
     $borrow = parseBorrowing($line);
     if ($borrow && $borrow['member_id'] === $memberID) {
-        // Get book info
+        
         $bookLine = findByID(BOOKS_FILE, $borrow['book_id']);
         $book = $bookLine ? parseBook($bookLine) : null;
-        
-        // Get return info if returned
-        $returnInfo = null;
+
+$returnInfo = null;
         if ($borrow['status'] === BORROW_STATUS_RETURNED) {
             $returns = readData(RETURNS_FILE);
             foreach ($returns as $retLine) {

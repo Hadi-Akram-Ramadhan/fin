@@ -5,50 +5,42 @@ require_once 'functions.php';
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get and sanitize inputs
+    
     $nama = sanitizeInput($_POST['nama'] ?? '');
     $email = sanitizeInput($_POST['email'] ?? '');
     $telepon = sanitizeInput($_POST['telepon'] ?? '');
     $alamat = sanitizeInput($_POST['alamat'] ?? '');
     $jenis = isset($_POST['jenis']) ? $_POST['jenis'] : [];
-    
-    // Validations
-    if (!validateRequired($nama, 3)) {
+
+if (!validateRequired($nama, 3)) {
         $errors[] = "Nama lengkap minimal 3 karakter";
     }
-    
-    // Email validation menggunakan filter_var() (Komponen Wajib #2)
-    if (!validateEmail($email)) {
+
+if (!validateEmail($email)) {
         $errors[] = "Format email tidak valid";
     }
-    
-    // Phone validation
-    if (!validatePhone($telepon)) {
+
+if (!validatePhone($telepon)) {
         $errors[] = "Format nomor telepon tidak valid (harus dimulai 08 atau +62)";
     }
     
     if (!validateRequired($alamat, 10)) {
         $errors[] = "Alamat minimal 10 karakter";
     }
-    
-    // Checkbox validation (Komponen Wajib #1 - Checkbox)
-    if (empty($jenis)) {
+
+if (empty($jenis)) {
         $errors[] = "Pilih minimal satu jenis keanggotaan";
     }
-    
-    // If no errors, save data
-    if (empty($errors)) {
-        // Capitalize nama (Komponen Wajib #3)
+
+if (empty($errors)) {
+        
         $nama = capitalizeName($nama);
-        
-        // Generate member ID
-        $memberID = getNextID(MEMBERS_FILE, 'MBR', 3);
-        
-        // Process jenis keanggotaan (checkbox bisa multiple)
-        $jenisStr = implode(',', $jenis);
-        
-        // Create data line
-        $data = implode('|', [
+
+$memberID = getNextID(MEMBERS_FILE, 'MBR', 3);
+
+$jenisStr = implode(',', $jenis);
+
+$data = implode('|', [
             $memberID,
             $nama,
             $email,
@@ -149,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </small>
                         </div>
 
-                        <!-- Checkbox: Jenis Keanggotaan (Komponen Wajib #1) -->
+                        <!-- Checkbox: Jenis Keanggotaan (Komponen Wajib 
                         <div class="form-group">
                             <label class="form-label required">Jenis Keanggotaan</label>
                             <div>

@@ -2,30 +2,25 @@
 require_once 'config.php';
 require_once 'functions.php';
 
-// Get all books
 $books = readData(BOOKS_FILE);
 
-// Search and filter
 $search = isset($_GET['search']) ? sanitizeInput($_GET['search']) : '';
 $category = isset($_GET['category']) ? sanitizeInput($_GET['category']) : '';
 
-// Filter books
 $filteredBooks = [];
 foreach ($books as $line) {
     $book = parseBook($line);
     if (!$book) continue;
-    
-    // Search filter
-    if ($search !== '') {
+
+if ($search !== '') {
         $searchLower = strtolower($search);
         if (strpos(strtolower($book['judul']), $searchLower) === false && 
             strpos(strtolower($book['pengarang']), $searchLower) === false) {
             continue;
         }
     }
-    
-    // Category filter
-    if ($category !== '' && $book['kategori'] !== $category) {
+
+if ($category !== '' && $book['kategori'] !== $category) {
         continue;
     }
     
